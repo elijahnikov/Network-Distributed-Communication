@@ -12,10 +12,12 @@ import java.util.concurrent.*;
 public class ChatServer {
 
     // All client names, so we can check for duplicates upon registration.
-    private static Set<String> names = new HashSet<>();
+    public static Set<String> names = new HashSet<>();
+    
+    public static Set<String> coordinator = new HashSet<>();
 
-     // The set of all the print writers for all the clients, used for broadcast.
-    private static Set<PrintWriter> writers = new HashSet<>();
+    // The set of all the print writers for all the clients, used for broadcast.
+    public static Set<PrintWriter> writers = new HashSet<>();
 
     public static void main(String[] args) throws Exception {
         System.out.println("The chat server is running...");

@@ -20,11 +20,11 @@ import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 
-public class InputGUI implements ActionListener {
+public class InputGUI extends ValidationCheck implements ActionListener {
     
     private JFrame frame = new JFrame("Connect Menu");
     private JPanel mainPanel = new JPanel();
-    private JTextField userIDField = new JTextField();
+    private static JTextField userIDField = new JTextField();
     private JTextField userIPField = new JTextField();
     private JTextField userPortField = new JTextField();
     private JTextField existingUserIPField = new JTextField();
@@ -38,6 +38,7 @@ public class InputGUI implements ActionListener {
     private JButton requestIDButton = new JButton("Request ID");
     private GridBagLayout gridBagLayout = new GridBagLayout();
     private GridBagConstraints gc = new GridBagConstraints();
+    private static String tempID;
     
     private static final long LIMIT = 999999L;
     private static long last = 0;
@@ -125,7 +126,7 @@ public class InputGUI implements ActionListener {
         if ("requestIDButton".equals(e.getActionCommand())){
             
             //validation to ensure field does not take an ID that already exists.
-            String tempID = new String(getID());
+            tempID = new String(getID());
             
             if (!ar.contains(tempID)){
                 userIDField.setText(tempID);
@@ -134,6 +135,7 @@ public class InputGUI implements ActionListener {
             } else {
                 System.out.println("number already in array");
             }
+           
         }
         
         if ("connectButton".equals(e.getActionCommand())){
@@ -152,26 +154,10 @@ public class InputGUI implements ActionListener {
             connectThread.start();
             frame.dispose();
             
+            setIDNum(userIDField.getText());
+            
         }
  
-    }
-    
-    //method to check if number fields (IP and Port) are empty
-    private boolean checkForNumber(JTextField field){
-        if (!field.getText().matches("[0-9]+")){
-            return false;
-        } else {
-            return true;
-        }
-    }
-   
-    //method to check if ID field is empty
-    private boolean checkForID(JTextField field){
-        if (field.getText().equals("")){
-            return false;
-        } else {
-            return true;
-        }
     }
     
     //method to generate an ID for the user  
@@ -179,5 +165,13 @@ public class InputGUI implements ActionListener {
         Random rnd = new Random();
         int number = rnd.nextInt(99999);
         return String.format("#" + "%05d", number);
+    }
+    
+    public static String getIDNum() {
+        return tempID;
+    }
+    
+    public void setIDNum(String setID) {
+        this.tempID = setID;
     }
 }

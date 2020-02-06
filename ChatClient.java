@@ -19,7 +19,8 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
 public class ChatClient {
-
+    
+    Message sm = new Message();
     String serverAddress;
     Scanner in;
     PrintWriter out;
@@ -43,7 +44,7 @@ public class ChatClient {
             public void actionPerformed(ActionEvent e) {
                 out.println(textField.getText());
                 textField.setText("");
-                getTime();
+                sm.getTime();
             }
         });
     }
@@ -71,7 +72,7 @@ public class ChatClient {
                     this.frame.setTitle("Chatter - " + line.substring(13));
                     textField.setEditable(true);
                 } else if (line.startsWith("MESSAGE")) {
-                    messageArea.append("[" + getTime() + "]" + " " + line.substring(8) + "\n");
+                    messageArea.append("[" + sm.getTime() + "]" + " " + line.substring(8) + "\n");
                 }
             }
         } finally {
@@ -79,16 +80,5 @@ public class ChatClient {
             frame.dispose();
         }
     }
-
-    public static void main(String[] args) throws Exception {
-        /*ChatClient client = new ChatClient("127.0.0.1");
-        client.frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        client.frame.setVisible(true);
-        client.run();*/
-    }
     
-    private String getTime(){
-        String currentTime = new SimpleDateFormat("HH:mm:ss", Locale.getDefault()).format(new Date());
-        return currentTime;
-    }
 }
