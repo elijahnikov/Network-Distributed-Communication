@@ -1,39 +1,39 @@
-package function.root;
+package comp1549;
 
 public class StringNode {
     
-    private double xvalue;
-    private double fxvalue;
+    private String userID;
+    private String userIP;
     private StringNode next;
     
     public StringNode(){
-        this(0, 0, null);
+        this("0", "0", null);
     }
     
-    public StringNode(double x, double fx, StringNode n){
-        xvalue = x;
-        fxvalue = fx;
+    public StringNode(String ID, String IP, StringNode n){
+        userID = ID;
+        userIP = IP;
         next = n;
     }
     
-    public double getXValue(){
-        return xvalue;
+    public String getID(){
+        return userID;
     }
     
-    public double getFXValue(){
-        return fxvalue;
+    public String getIP(){
+        return userIP;
     }
     
     public StringNode getNext(){
         return next;
     }
     
-    public void setXValue(double newXValue){
-        xvalue = newXValue;
+    public void setID(String newID){
+        userID = newID;
     }
     
-    public void setFXValue(double newFXValue){
-        fxvalue = newFXValue;
+    public void setIP(String newIP){
+        userIP = newIP;
     }
     
     public void setNext(StringNode newNext){
