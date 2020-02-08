@@ -39,9 +39,7 @@ public class InputGUI extends ValidationCheck implements ActionListener {
     private GridBagLayout gridBagLayout = new GridBagLayout();
     private GridBagConstraints gc = new GridBagConstraints();
     private static String tempID;
-    
-    private static final long LIMIT = 999999L;
-    private static long last = 0;
+    ValidationCheck vc = new ValidationCheck();
    
     public void createGUI(){
        
@@ -139,22 +137,25 @@ public class InputGUI extends ValidationCheck implements ActionListener {
         }
         
         if ("connectButton".equals(e.getActionCommand())){
-            
-            Thread connectThread = new Thread(new Runnable() {
-                @Override
-                public void run() {
-                   ChatClient clientClass = new ChatClient("127.0.0.1");
-                    try {
-                        clientClass.run();
-                    } catch (IOException ex) {
-                        Logger.getLogger(InputGUI.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-               } 
-            });
-            connectThread.start();
-            frame.dispose();
-            
-            setIDNum(userIDField.getText());
+                        
+            //if (vc.checkForID(userIDField) && vc.checkForIP(userIPField) && vc.checkForPort(userPortField){
+                Thread connectThread = new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        ChatClient clientClass = new ChatClient("127.0.0.1");
+                        try {
+                            clientClass.run();
+                        } catch (IOException ex) {
+                            Logger.getLogger(InputGUI.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                    } 
+                });
+                connectThread.start();
+                frame.dispose();
+                setIDNum(userIDField.getText());
+            /*} else {
+                JOptionPane.showMessageDialog(null, "Please enter correct data in all fields.");
+            } */
             
         }
  

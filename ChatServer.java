@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.Arrays;
 import java.util.Set;
 import java.util.HashSet;
 import java.util.Scanner;
@@ -55,6 +56,10 @@ public class ChatServer {
                         return;
                     }
                     synchronized (names) {
+                        if (names.isEmpty()){
+                            coordinator.add(name);
+                            System.out.println("Coordinator is: " + coordinator.toString());
+                        }
                         if (!name.isEmpty() && !names.contains(name)) {
                             names.add(name);
                             break;
