@@ -4,19 +4,16 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.Arrays;
 import java.util.Set;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Scanner;
 import java.util.concurrent.*;
 
 public class ChatServer {
 
-    // All client names, so we can check for duplicates upon registration.
-    public static Set<String> names = new HashSet<>();
+    public static Members members = new Members();
     
-    public static Set<String> coordinator = new HashSet<>();
-
     // The set of all the print writers for all the clients, used for broadcast.
     public static Set<PrintWriter> writers = new HashSet<>();
 
@@ -34,6 +31,7 @@ public class ChatServer {
      * The client handler task.
      */
     private static class Handler implements Runnable {
+        Coordinator coordinator = Coordinator.getInstance();
         private String name;
         private Socket socket;
         private Scanner in;
@@ -55,15 +53,14 @@ public class ChatServer {
                     if (name == null) {
                         return;
                     }
-                    synchronized (names) {
-                        if (names.isEmpty()){
-                            coordinator.add(name);
-                            System.out.println("Coordinator is: " + coordinator.toString());
+                    synchronized (members) {
+                        if (coordinator.isEmpty()){
+                            makeCoordinator();
                         }
-                        if (!name.isEmpty() && !names.contains(name)) {
-                            names.add(name);
+                        if (!name.isEmpty() && !members.contains(name)) {
+                            members.addMember(name);
                             break;
-                        }
+                        } 
                     }
                 }
                 
@@ -86,20 +83,38 @@ public class ChatServer {
                     }
                 }
             } catch (Exception e) {
-                System.out.println(e);
             } finally {
                 if (out != null) {
                     writers.remove(out);
                 }
+                if (coordinator != null){
+                    coordinator.setCoordinator(null);
+                    
+                        if (coordinator.isEmpty()){
+                            coordinator.setCoordinator(members.getNext());
+                            System.out.println("Coordinator is: " + coordinator.getCoordinator());
+                            out.println("MESSAGE " + "You are the coordinator!");
+                        }
+                    
+                    //coordinator.add(nextCo);
+                    //out.println("MESSAGE " + "You are the new coordinator!");
+                }
                 if (name != null) {
+                    
                     System.out.println(name + " is leaving");
-                    names.remove(name);
+                    members.removeMember(name);
                     for (PrintWriter writer : writers) {
                         writer.println("MESSAGE " + name + " has left");
                     }
                 }
                 try { socket.close(); } catch (IOException e) {}
             }
+        }
+        
+        public void makeCoordinator(){
+            coordinator.setCoordinator(name);
+            System.out.println("Coordinator is: " + coordinator.getCoordinator());
+            out.println("MESSAGE " + "You are the coordinator!");
         }
     }
 }

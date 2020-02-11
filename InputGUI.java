@@ -14,32 +14,30 @@ import java.util.logging.Logger;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 
-public class InputGUI extends ValidationCheck implements ActionListener {
+public class InputGUI implements ActionListener {
     
     private JFrame frame = new JFrame("Connect Menu");
     private JPanel mainPanel = new JPanel();
     private static JTextField userIDField = new JTextField();
     private JTextField userIPField = new JTextField();
     private JTextField userPortField = new JTextField();
-    private JTextField existingUserIPField = new JTextField();
-    private JTextField existingUserPortField = new JTextField();
+    public static JTextField existingUserIPField = new JTextField();
+    public static JTextField existingUserPortField = new JTextField();
     private JLabel userIDLabel = new JLabel("User ID: ");
     private JLabel userIPLabel = new JLabel("User IP Address: ");
     private JLabel userPortLabel = new JLabel("User Port: ");
-    private JLabel existingUserIPLabel = new JLabel("Existing User IP Address: ");
-    private JLabel existingUserPortLabel = new JLabel("Existing User Port: ");
+    public static JLabel existingUserIPLabel = new JLabel("Existing User IP Address: ");
+    public static JLabel existingUserPortLabel = new JLabel("Existing User Port: ");
     private JButton connectButton = new JButton("Connect");
     private JButton requestIDButton = new JButton("Request ID");
     private GridBagLayout gridBagLayout = new GridBagLayout();
     private GridBagConstraints gc = new GridBagConstraints();
     private static String tempID;
-    ValidationCheck vc = new ValidationCheck();
+    Validation vc = new Validation();
    
     public void createGUI(){
        
@@ -49,12 +47,8 @@ public class InputGUI extends ValidationCheck implements ActionListener {
         userPortField.setPreferredSize(new Dimension(150, 27));
         existingUserIPField.setPreferredSize(new Dimension(150, 27));
         existingUserPortField.setPreferredSize(new Dimension(150, 27));
-
-        existingUserIPField.setVisible(false);
-        existingUserPortField.setVisible(false);
-        existingUserIPLabel.setVisible(false);
-        existingUserPortLabel.setVisible(false);
-        //sets existing user input fields and labels to invisible if no one is connected
+  
+        //sets existing user input fields and labels to invisible if no one is connected*/
        
         connectButton.addActionListener(this);
         connectButton.setActionCommand("connectButton");
