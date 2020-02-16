@@ -2,18 +2,24 @@ package comp1549;
 
 public class StringNode {
     
+    private String userType;
     private String userID;
     private String userIP;
     private StringNode next;
     
     public StringNode(){
-        this("0", "0", null);
+        this(null, null, null, null);
     }
     
-    public StringNode(String ID, String IP, StringNode n){
+    public StringNode(String type, String ID, String IP, StringNode n){
         userID = ID;
         userIP = IP;
+        userType = type;
         next = n;
+    }
+    
+    public String getType(){
+        return userType;
     }
     
     public String getID(){
@@ -26,6 +32,10 @@ public class StringNode {
     
     public StringNode getNext(){
         return next;
+    }
+    
+    public void setType(String newType){
+        userType = newType;
     }
     
     public void setID(String newID){

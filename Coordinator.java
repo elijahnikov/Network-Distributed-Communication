@@ -23,13 +23,20 @@ public class Coordinator {
         return coordinatorID;
     }
     
+    public boolean contains(String name){
+        boolean check = false;
+        if (coordinatorID == name){
+            check = true;
+        }
+        return check;
+    }
    
     public boolean isEmpty() {
-        boolean isTrue = false;
+        boolean check = false;
         if (coordinatorID == null) {
-           isTrue = true;
+           check = true;
         }
-        return isTrue;
+        return check;
     }
     
 }

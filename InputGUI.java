@@ -20,24 +20,28 @@ import javax.swing.WindowConstants;
 
 public class InputGUI implements ActionListener {
     
-    private JFrame frame = new JFrame("Connect Menu");
-    private JPanel mainPanel = new JPanel();
-    private static JTextField userIDField = new JTextField();
-    private JTextField userIPField = new JTextField();
-    private JTextField userPortField = new JTextField();
-    public static JTextField existingUserIPField = new JTextField();
-    public static JTextField existingUserPortField = new JTextField();
-    private JLabel userIDLabel = new JLabel("User ID: ");
-    private JLabel userIPLabel = new JLabel("User IP Address: ");
-    private JLabel userPortLabel = new JLabel("User Port: ");
-    public static JLabel existingUserIPLabel = new JLabel("Existing User IP Address: ");
-    public static JLabel existingUserPortLabel = new JLabel("Existing User Port: ");
-    private JButton connectButton = new JButton("Connect");
-    private JButton requestIDButton = new JButton("Request ID");
-    private GridBagLayout gridBagLayout = new GridBagLayout();
-    private GridBagConstraints gc = new GridBagConstraints();
+    private final JFrame frame = new JFrame("Connect Menu");
+    private final JPanel mainPanel = new JPanel();
+    private final JTextField userIDField = new JTextField();
+    private final JTextField userIPField = new JTextField();
+    private final JTextField userPortField = new JTextField();
+    public JTextField existingUserIPField = new JTextField();
+    public JTextField existingUserPortField = new JTextField();
+    private final JLabel userIDLabel = new JLabel("User ID: ");
+    private final JLabel userIPLabel = new JLabel("User IP Address: ");
+    private final JLabel userPortLabel = new JLabel("User Port: ");
+    public JLabel existingUserIPLabel = new JLabel("Existing User IP Address: ");
+    public JLabel existingUserPortLabel = new JLabel("Existing User Port: ");
+    private final JButton connectButton = new JButton("Connect");
+    private final JButton requestIDButton = new JButton("Request ID");
+    private final GridBagLayout gridBagLayout = new GridBagLayout();
+    private final GridBagConstraints gc = new GridBagConstraints();
     private static String tempID;
+    private static String tempIP;
+
     Validation vc = new Validation();
+    Members member = new Members();
+    Coordinator coordinator = Coordinator.getInstance();
    
     public void createGUI(){
        
@@ -47,9 +51,12 @@ public class InputGUI implements ActionListener {
         userPortField.setPreferredSize(new Dimension(150, 27));
         existingUserIPField.setPreferredSize(new Dimension(150, 27));
         existingUserPortField.setPreferredSize(new Dimension(150, 27));
-  
-        //sets existing user input fields and labels to invisible if no one is connected*/
-       
+
+        existingUserIPLabel.setVisible(true);
+        existingUserPortLabel.setVisible(true);
+        existingUserIPField.setVisible(true);
+        existingUserPortField.setVisible(true);
+            
         connectButton.addActionListener(this);
         connectButton.setActionCommand("connectButton");
         requestIDButton.addActionListener(this);
@@ -109,7 +116,7 @@ public class InputGUI implements ActionListener {
         
     }
     
-    //just to check if validation works, delete after
+    //array list containing the id's to ensure system does not generate a duplicate
     ArrayList<String> ar = new ArrayList<String>();
 
     @Override
@@ -131,7 +138,6 @@ public class InputGUI implements ActionListener {
         }
         
         if ("connectButton".equals(e.getActionCommand())){
-                        
             //if (vc.checkForID(userIDField) && vc.checkForIP(userIPField) && vc.checkForPort(userPortField){
                 Thread connectThread = new Thread(new Runnable() {
                     @Override
@@ -147,14 +153,14 @@ public class InputGUI implements ActionListener {
                 connectThread.start();
                 frame.dispose();
                 setIDNum(userIDField.getText());
+                setIP(userIPField.getText());
             /*} else {
                 JOptionPane.showMessageDialog(null, "Please enter correct data in all fields.");
             } */
             
         }
- 
     }
-    
+
     //method to generate an ID for the user  
     public static String getID() {
         Random rnd = new Random();
@@ -162,11 +168,19 @@ public class InputGUI implements ActionListener {
         return String.format("#" + "%05d", number);
     }
     
-    public static String getIDNum() {
+    public String getIDNum() {
         return tempID;
     }
     
     public void setIDNum(String setID) {
         this.tempID = setID;
+    }
+    
+    public String getIP(){
+        return tempIP;
+    }
+    
+    public void setIP(String IP){
+        this.tempIP = IP;
     }
 }

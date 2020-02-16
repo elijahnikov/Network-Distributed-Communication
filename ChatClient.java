@@ -10,16 +10,16 @@ import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
-import javax.swing.table.DefaultTableModel;
 
-public class ChatClient {
+public class ChatClient implements ActionListener {
     
+    UserTable ut = new UserTable();
     Message sm = new Message();
     String serverAddress;
     Scanner in;
@@ -31,36 +31,22 @@ public class ChatClient {
     JPanel containerPanel = new JPanel(new GridLayout(1, 1));
     JPanel chatPanel;
     JPanel tablePanel;
-    
-    //variables for the user information table
-    JTable userTable;
-    String[] columnNames;
-    String[][] data;
-    DefaultTableModel model;
-    Object[][] rowData = {{1, 2, 3}};
-    String[] column = {"Type", "User ID", "User IP"};
-    String userType;
-    String userID;
-    String userIP;
     GridBagLayout gridBagLayout = new GridBagLayout();
     GridBagConstraints gc = new GridBagConstraints();
+    JScrollPane tableScroll;
+    JButton userButton = new JButton("View/Update Users");
     JPanel mainPanel = new JPanel();
 
     public ChatClient(String serverAddress) {
         
         this.serverAddress = serverAddress;        
-        
-        //table functionality
-        model = new DefaultTableModel(rowData, column);
-        userTable = new JTable(model);
-        userTable.getColumnModel().getColumn(0).setPreferredWidth(40);
-        userTable.getColumnModel().getColumn(1).setPreferredWidth(30);
-        userTable.getColumnModel().getColumn(2).setPreferredWidth(80);
-        
-        JScrollPane tableScroll = new JScrollPane(userTable);
+        tableScroll = new JScrollPane(ut.userTable);
         JScrollPane messageScroll = new JScrollPane(messageArea);
         messageScroll.setPreferredSize(new Dimension(600, 450));
         tableScroll.setPreferredSize(new Dimension(300, 450));
+        
+        userButton.addActionListener(this);
+        userButton.setActionCommand("userButton");
         
         textField.setEditable(false);
         messageArea.setEditable(false);
@@ -78,7 +64,10 @@ public class ChatClient {
         gc.anchor = GridBagConstraints.LINE_START;
         gc.gridx = 1;
         gc.gridy = 0;
-        mainPanel.add(tableScroll);
+        mainPanel.add(tableScroll, gc);
+        gc.gridx = 1;
+        gc.gridy = 1;
+        mainPanel.add(userButton, gc);
 
         frame.add(mainPanel);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -96,15 +85,6 @@ public class ChatClient {
         });
     }
 
-    /*private String getName() {
-        return JOptionPane.showInputDialog(
-            frame,
-            "Choose a screen name:",
-            "Screen name selection",
-            JOptionPane.PLAIN_MESSAGE
-        );
-    }*/
-
     void run() throws IOException {
         try {
             Socket socket = new Socket(serverAddress, 59001);
@@ -115,16 +95,34 @@ public class ChatClient {
                 String line = in.nextLine();
                 if (line.startsWith("SUBMITNAME")) {
                     out.println(IG.getIDNum());
+                } else if (line.startsWith("SUBMITIP")){
+                    out.println(IG.getIP());
                 } else if (line.startsWith("NAMEACCEPTED")) {
                     this.frame.setTitle("Chatter - " + line.substring(13));
                     textField.setEditable(true);
                 } else if (line.startsWith("MESSAGE")) {
                     messageArea.append("[" + sm.getTime() + "]" + " " + line.substring(8) + "\n");
-                }
+                } else if (line.startsWith("USERTYPE")){
+                    System.out.println(line.substring(8));
+                } else if (line.startsWith("USERID")){
+                    System.out.println(line.substring(6));
+                } else if (line.startsWith("USERIP")){
+                    System.out.println(line.substring(6));
+                } 
             }
         } finally {
             frame.setVisible(false);
             frame.dispose();
+        }
+    }
+    
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        
+        if ("userButton".equals(e.getActionCommand())){
+            //Object[] record = {"1", "2", "3"};
+            //UserTable.model.addRow(record);
+            UserTable.userList.printList(UserTable.userList);
         }
     }
 }
