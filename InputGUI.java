@@ -16,6 +16,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.KeyStroke;
 import javax.swing.WindowConstants;
 
 public class InputGUI implements ActionListener {
@@ -113,7 +114,7 @@ public class InputGUI implements ActionListener {
         frame.pack();
         frame.setLocationRelativeTo(null);
         frame.setVisible(true); 
-        
+               
     }
     
     //array list containing the id's to ensure system does not generate a duplicate
@@ -142,8 +143,8 @@ public class InputGUI implements ActionListener {
                 Thread connectThread = new Thread(new Runnable() {
                     @Override
                     public void run() {
-                        ChatClient clientClass = new ChatClient("127.0.0.1");
                         try {
+                            ChatClient clientClass = new ChatClient("127.0.0.1");
                             clientClass.run();
                         } catch (IOException ex) {
                             Logger.getLogger(InputGUI.class.getName()).log(Level.SEVERE, null, ex);

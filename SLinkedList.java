@@ -3,8 +3,7 @@ package comp1549;
 import java.util.NoSuchElementException;
 
 public class SLinkedList {
-    
-    public static String chosenFunction;
+   
     public StringNode head;
         
     public SLinkedList() {
@@ -21,7 +20,6 @@ public class SLinkedList {
         while(tail.getNext() != null){
             tail = tail.getNext();
         }
-        
         tail.setNext( new StringNode(type, ID, IP, null));
     }
     
@@ -32,8 +30,7 @@ public class SLinkedList {
         while (temp.getID() != ID && temp.getType() != type && temp.getNext() != null) {
             previous = temp;
             temp = temp.getNext();
-            }
-        if (previous != null && temp.getNext() != null) {
+            } if (previous != null && temp.getNext() != null) {
            previous.setNext(temp.getNext());
            temp.setNext(null);
         } else {
@@ -67,7 +64,6 @@ public class SLinkedList {
     public static void printList(SLinkedList thelist){
         StringNode temp;
         int count = 1;
-        //System.out.println("test");
         if (thelist.isEmpty()){
             System.out.println("List is empty");
         } else {
@@ -80,5 +76,5 @@ public class SLinkedList {
             System.out.println();
         }
     }
-    
+   
 }

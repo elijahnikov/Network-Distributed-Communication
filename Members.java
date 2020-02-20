@@ -57,7 +57,12 @@ public class Members {
         return arr.get(currentIndex);
     }
     
-    public boolean size(){
+    public int getSize(){
+        int size = arr.size();
+        return size;
+    }
+    
+    public boolean hasCoordinator(){
         boolean check = false;
         if (arr.size() == 1){
             check = true;

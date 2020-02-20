@@ -12,9 +12,7 @@ import java.util.concurrent.*;
 public class ChatServer {
 
     public static Members members = new Members();
-    // The set of all the print writers for all the clients, used for broadcast.
     public static Set<PrintWriter> writers = new HashSet<>();
-    
     public static UserTable ut = new UserTable();
     
     public static void main(String[] args) throws Exception {
@@ -31,6 +29,7 @@ public class ChatServer {
         Coordinator coordinator = Coordinator.getInstance();
         public String name;
         public String ip;
+        public String type;
         private Socket socket;
         private Scanner in;
         private PrintWriter out;
@@ -56,13 +55,12 @@ public class ChatServer {
                     if (ip == null){
                         return;
                     }
+                    
                     synchronized (members) {
                         if (coordinator.isEmpty()){ 
                             makeCoordinator();   
                         }
                         if (!name.isEmpty() && !members.contains(name)) {
-                            addToList("temp", name, "123");
-                            UserTable.userList.printList(UserTable.userList);
                             members.addMember(name);
                             members.makeArray();
                             break;
@@ -71,71 +69,40 @@ public class ChatServer {
                     }
                 }
                 
-                
-                
                 out.println("NAMEACCEPTED " + name);
                 for (PrintWriter writer : writers) {
                     writer.println("MESSAGE " + name + " has joined");
                 }
                 writers.add(out);
                 
-                String type;
-                if (members.size()){ 
+                out.println("USERTYPE");
+                type = in.nextLine();
+                if (members.hasCoordinator()){
                     type = "Coordinator";
                 } else {
                     type = "Member";
-                }
-                out.println("USERTYPE" + type);
-                
-                out.println("USERID" + name);
-                
-                out.println("USERIP" + ip);
-                
+                }          
+                for (PrintWriter writer : writers) {
+                    writer.println("SENDTYPE" + type);
+                    writer.println("SENDID" + name);
+                    writer.println("SENDIP" + ip);
+                    writer.println("ASSEMBLE");
+                }         
+
                 // Accept messages from this client and broadcast them.
                 while (true) {
                     String input = in.nextLine();
-                    if (input.toLowerCase().startsWith("/quit")) {
-                        return;
+                    if (input.toLowerCase().startsWith("true")) {
+                        break;
                     }
                     for (PrintWriter writer : writers) {
-                        
-                            writer.println("MESSAGE " + name + ": " + input);
-                        
+                        writer.println("MESSAGE " + name + ": " + input);
                     }
-                }          
-                      
+                }
+            
             } catch (Exception e) {
             } finally {
-                if (out != null) {
-                    writers.remove(out);
-                }
-                if (coordinator != null){
-                    members.removeMember(coordinator.getCoordinator());
-                    coordinator.setCoordinator(null);
-                        if (coordinator.isEmpty()){
-                            if (members.isEmpty()) {
-                                System.out.println("No more members");
-                            } else {  
-                                UserTable.userList.removeFirst();
-                                coordinator.setCoordinator(members.getNext());
-                                UserTable.userList.head.setType("Coordinator");
-                                UserTable.userList.head.setID(coordinator.getCoordinator());
-                                UserTable.userList.head.setIP("123");
-                                System.out.println("New Coordinator is: " + coordinator.getCoordinator());
-                                for (PrintWriter writer : writers){
-                                    writer.println("MESSAGE " + "[SERVER]"  + " New Coordinator is: " + coordinator.getCoordinator());
-                                }
-                            }
-                        }
-                }
-                if (name != null) {
-                    
-                    System.out.println(name + " is leaving");
-                    members.removeMember(name);
-                    for (PrintWriter writer : writers) {
-                        writer.println("MESSAGE " + name + " has left");
-                    }
-                }
+                leave();
                 try { socket.close(); } catch (IOException e) {}
             }
         }
@@ -146,15 +113,35 @@ public class ChatServer {
             out.println("MESSAGE " + "[SERVER]" + " You are the coordinator!");
         }
         
-        public void addToList(String type, String ID, String IP){
-            if (members.isEmpty()){
-                type = "Coordinator";
-                UserTable.userList.head.setType(type);
-                UserTable.userList.head.setID(ID);
-                UserTable.userList.head.setIP(IP);
-            } else {
-                type = "Member";
-                UserTable.userList.addLast(type, ID, IP);
+        public void leave(){
+            if (out != null) {
+                    writers.remove(out);
+            }
+            if (coordinator != null){
+                members.removeMember(coordinator.getCoordinator());
+                coordinator.setCoordinator(null);
+                    if (coordinator.isEmpty()){
+                        if (members.isEmpty()) {
+                            System.out.println("No more members");
+                        } else {  
+                            UserTable.list.removeFirst();
+                            coordinator.setCoordinator(members.getNext());
+                            UserTable.list.head.setType("Coordinator");
+                            UserTable.list.head.setID(coordinator.getCoordinator());
+                            UserTable.list.head.setIP("123");
+                            System.out.println("New Coordinator is: " + coordinator.getCoordinator());
+                            for (PrintWriter writer : writers){
+                                 writer.println("MESSAGE " + "[SERVER]"  + " New Coordinator is: " + coordinator.getCoordinator());
+                            }
+                        }
+                    }
+            }
+            if (name != null) {
+                System.out.println(name + " is leaving");
+                members.removeMember(name);
+                for (PrintWriter writer : writers) {
+                     writer.println("MESSAGE " + name + " has left");
+                }
             }
         }
     }

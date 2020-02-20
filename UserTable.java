@@ -5,7 +5,7 @@ import javax.swing.table.DefaultTableModel;
 
 public class UserTable {
     
-    public static SLinkedList userList = new SLinkedList();
+    public static SLinkedList list = new SLinkedList();
     JTable userTable;
     public static DefaultTableModel model;
     String [] column = {"Type", "User ID", "User IP"};
@@ -18,7 +18,7 @@ public class UserTable {
         userTable.getColumnModel().getColumn(2).setPreferredWidth(80);
     }
   
-    public static void tableData(SLinkedList list){
+    public static String tableData(SLinkedList list){
        StringNode temp;
        if (list.isEmpty()){
            System.out.println("List is empty");
@@ -26,7 +26,7 @@ public class UserTable {
            temp = list.head;
            System.out.println("test");
            try {
-               while (temp != null){
+               while (temp == null){
                String typeString = temp.getType();
                String IDString = temp.getID();
                String IPString = temp.getIP();
@@ -38,5 +38,16 @@ public class UserTable {
                
            }
        }
+       return null;
    }
+    
+    public static void addToList(String type, String ID, String IP){
+            if (type == "Coordinator"){
+                list.head.setType(type);
+                list.head.setID(ID);
+                list.head.setIP(IP);
+            } else {
+                list.addLast(type, ID, IP);
+            }
+        }
 }
