@@ -6,9 +6,9 @@ import javax.swing.table.DefaultTableModel;
 public class UserTable {
     
     public static SLinkedList list = new SLinkedList();
-    JTable userTable;
+    public static JTable userTable;
     public static DefaultTableModel model;
-    String [] column = {"Type", "User ID", "User IP"};
+    public static String [] column = {"Type", "User ID", "User IP"};
     
     public UserTable() {
         model = new DefaultTableModel(null, column);
@@ -18,7 +18,7 @@ public class UserTable {
         userTable.getColumnModel().getColumn(2).setPreferredWidth(80);
     }
   
-    public static String tableData(SLinkedList list){
+    public static void tableData(SLinkedList list){
        StringNode temp;
        if (list.isEmpty()){
            System.out.println("List is empty");
@@ -38,10 +38,9 @@ public class UserTable {
                
            }
        }
-       return null;
    }
     
-    public static void addToList(String type, String ID, String IP){
+    public static void addToList(SLinkedList list, String type, String ID, String IP){
             if (type == "Coordinator"){
                 list.head.setType(type);
                 list.head.setID(ID);

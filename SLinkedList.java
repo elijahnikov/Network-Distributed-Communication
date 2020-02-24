@@ -76,5 +76,5 @@ public class SLinkedList {
             System.out.println();
         }
     }
-   
+
 }

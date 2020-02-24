@@ -1,5 +1,6 @@
 package comp1549;
 
+import static comp1549.UserTable.model;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
@@ -16,7 +17,6 @@ import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.JButton;
 import javax.swing.JFrame;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
@@ -32,6 +32,7 @@ public class ChatClient implements ActionListener {
     String serverAddress;
     Scanner in;
     PrintWriter out;
+    int count = 0;
     JFrame frame = new JFrame("Chatter");
     JTextField textField = new JTextField(54);
     JTextArea messageArea = new JTextArea(16, 50);
@@ -48,6 +49,7 @@ public class ChatClient implements ActionListener {
     public String type;
     public String id; 
     public String ip;
+    public SLinkedList cl = new SLinkedList();
 
     public ChatClient(String serverAddress) throws IOException {
         
@@ -125,7 +127,7 @@ public class ChatClient implements ActionListener {
         try {
             in = new Scanner(socket.getInputStream());
             out = new PrintWriter(socket.getOutputStream(), true);
-
+            
             while (in.hasNextLine()) {
                 String line = in.nextLine();
                 if (line.startsWith("SUBMITNAME")) {
@@ -141,22 +143,14 @@ public class ChatClient implements ActionListener {
                     out.println("temp");
                 } else if (line.startsWith("SENDTYPE")){
                     type = line.substring(8);
-                    //UserTable.model.addRow(new Object[] {line.substring(8), null, null});
-                    /*if (UserTable.userList.isEmpty()){
-                        UserTable.userList.head.setType(type);
-                        UserTable.userList.head.setID(id);
-                        UserTable.userList.head.setIP(ip);
-                    } else {
-                        UserTable.userList.addLast(type, id, ip);
-                    }*/
                 } else if (line.startsWith("SENDID")){
                     id = line.substring(6);
                 } else if (line.startsWith("SENDIP")){
                     ip = line.substring(6);
-                    //UserTable.addToList(type, id, ip);
-                    //UserTable.list.printList(UserTable.list);
-                } else if (line.startsWith("ASSEMBLE")){
-                    UserTable.model.addRow(new Object[] {type, id, ip});
+                } else if (line.startsWith("ASSEMBLE")){  
+                    int count = Integer.parseInt(line.substring(8));
+                    model.addRow(new Object[] {type, id, ip});
+                    updateTable(count);
                 }    
             }            
         } finally {
@@ -171,5 +165,10 @@ public class ChatClient implements ActionListener {
 
         }
     }
-
+    
+    private void updateTable(int count){
+        if (model.getRowCount() > count){
+            model.removeRow(model.getRowCount() - count);
+        }
+    }
 }

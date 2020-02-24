@@ -12,6 +12,6 @@ public class COMP1549 {
             //sets the theme for the gui
             UIManager.setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel");             
         } catch (Exception ignored){} 
-        runInputFrame.createGUI();          
+        runInputFrame.createGUI();            
     }    
 }

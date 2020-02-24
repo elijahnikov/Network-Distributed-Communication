@@ -14,6 +14,7 @@ public class ChatServer {
     public static Members members = new Members();
     public static Set<PrintWriter> writers = new HashSet<>();
     public static UserTable ut = new UserTable();
+    public static SLinkedList ul = new SLinkedList();
     
     public static void main(String[] args) throws Exception {
         System.out.println("The chat server is running...");
@@ -82,18 +83,22 @@ public class ChatServer {
                 } else {
                     type = "Member";
                 }          
+                
+                UserTable.addToList(ul, type, name, ip);
+                ul.printList(ul);
+                
                 for (PrintWriter writer : writers) {
-                    writer.println("SENDTYPE" + type);
-                    writer.println("SENDID" + name);
-                    writer.println("SENDIP" + ip);
-                    writer.println("ASSEMBLE");
+                    //writer.println("SENDTYPE");
+                    //writer.println("SENDID");
+                    //writer.println("SENDIP");
+                    sendList(ul, writer);
                 }         
-
+                
                 // Accept messages from this client and broadcast them.
                 while (true) {
                     String input = in.nextLine();
-                    if (input.toLowerCase().startsWith("true")) {
-                        break;
+                    if (input.toLowerCase().startsWith("!check")) {
+                        out.println("MESSAGE" + "hello");
                     }
                     for (PrintWriter writer : writers) {
                         writer.println("MESSAGE " + name + ": " + input);
@@ -103,7 +108,9 @@ public class ChatServer {
             } catch (Exception e) {
             } finally {
                 leave();
-                try { socket.close(); } catch (IOException e) {}
+                try { 
+                    socket.close(); 
+                } catch (IOException e) {}
             }
         }
 
@@ -124,11 +131,11 @@ public class ChatServer {
                         if (members.isEmpty()) {
                             System.out.println("No more members");
                         } else {  
-                            UserTable.list.removeFirst();
+                            ul.removeFirst();
                             coordinator.setCoordinator(members.getNext());
-                            UserTable.list.head.setType("Coordinator");
-                            UserTable.list.head.setID(coordinator.getCoordinator());
-                            UserTable.list.head.setIP("123");
+                            ul.head.setType("Coordinator");
+                            ul.head.setID(coordinator.getCoordinator());
+                            ul.head.setIP("123");
                             System.out.println("New Coordinator is: " + coordinator.getCoordinator());
                             for (PrintWriter writer : writers){
                                  writer.println("MESSAGE " + "[SERVER]"  + " New Coordinator is: " + coordinator.getCoordinator());
@@ -144,5 +151,22 @@ public class ChatServer {
                 }
             }
         }
+        
+        //method to send list to each client, in order to populate user table.
+        public static void sendList(SLinkedList list, PrintWriter writer){
+            StringNode temp;
+            if (list.isEmpty()){
+                System.out.println("List is empty");
+            } else {
+                temp = list.head;
+                while (temp !=null){
+                    writer.println("SENDTYPE" + temp.getType());
+                    writer.println("SENDID" + temp.getID());
+                    writer.println("SENDIP" + temp.getIP());
+                    writer.println("ASSEMBLE" + list.count());
+                    temp = temp.getNext();
+                }
+            }
+        } 
     }
 }

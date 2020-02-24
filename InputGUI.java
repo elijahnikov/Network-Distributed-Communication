@@ -14,9 +14,9 @@ import java.util.logging.Logger;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-import javax.swing.KeyStroke;
 import javax.swing.WindowConstants;
 
 public class InputGUI implements ActionListener {
@@ -119,7 +119,8 @@ public class InputGUI implements ActionListener {
     
     //array list containing the id's to ensure system does not generate a duplicate
     ArrayList<String> ar = new ArrayList<String>();
-
+    
+    
     @Override
     public void actionPerformed(ActionEvent e) {
         
@@ -138,16 +139,20 @@ public class InputGUI implements ActionListener {
            
         }
         
-        if ("connectButton".equals(e.getActionCommand())){
+        
+        
+        if ("connectButton".equals(e.getActionCommand())){ 
+            
+            
             //if (vc.checkForID(userIDField) && vc.checkForIP(userIPField) && vc.checkForPort(userPortField){
                 Thread connectThread = new Thread(new Runnable() {
                     @Override
                     public void run() {
                         try {
-                            ChatClient clientClass = new ChatClient("127.0.0.1");
+                            ChatClient clientClass = new ChatClient("192.168.0.11");
                             clientClass.run();
                         } catch (IOException ex) {
-                            Logger.getLogger(InputGUI.class.getName()).log(Level.SEVERE, null, ex);
+                            JOptionPane.showMessageDialog(null, "Invalid IP, please retry.");
                         }
                     } 
                 });
