@@ -1,15 +1,13 @@
 package comp1549;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 public class Members {
     
     int currentIndex = 0;
-    private static Set<String> names = new HashSet<>();
-    private static List<String> arr;
+    private static List<String> names = new ArrayList<>();
+    private static List<String> ip = new ArrayList<>();
     
     public void addMember(String name){
         names.add(name);
@@ -17,7 +15,14 @@ public class Members {
     
     public void removeMember(String name){
         names.remove(name);
-        arr.remove(name);
+    }
+    
+    public void addIP(String IP){
+        ip.add(IP);;
+    }
+    
+    public void removeIP(String IP){
+        ip.remove(IP);
     }
     
     public boolean contains(String name) {
@@ -36,35 +41,46 @@ public class Members {
         return check;
     }
     
-    public void makeArray(){
-         arr = new ArrayList<String>(names);
-    }
-    
     public void printArray(){
-        for (String strings : arr){
+        for (String strings : names){
+            System.out.println(strings);
+        }
+        
+        for (String strings : ip){
             System.out.println(strings);
         }
     }
     
-    public String getNext(){
+    public String getNextName(){
         currentIndex++;
-        if (currentIndex >= arr.size()){
+        if (currentIndex >= names.size()){
             currentIndex = 0;
         }
-        if (arr.size() == 0){
+        if (names.size() == 0){
             return null;
         }
-        return arr.get(currentIndex);
+        return names.get(currentIndex);
+    }
+    
+    public String getNextIP(){
+        currentIndex++;
+        if (currentIndex >= ip.size()){
+            currentIndex = 0;
+        }
+        if (ip.size() == 0){
+            return null;
+        }
+        return ip.get(currentIndex);
     }
     
     public int getSize(){
-        int size = arr.size();
+        int size = names.size();
         return size;
     }
     
     public boolean hasCoordinator(){
         boolean check = false;
-        if (arr.size() == 1){
+        if (names.size() == 1){
             check = true;
         } 
         return check;

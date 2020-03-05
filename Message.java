@@ -16,4 +16,9 @@ public class Message {
         field.append("[" + getTime() + "]" + " " + message + "\n"); 
     }
     
+    public int shortenTime(String time) {
+        int length = time.length();
+        int shortTime = Integer.parseInt(time.substring(length/2-1, length/2+1));
+        return shortTime;
+    }
 }

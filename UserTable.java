@@ -9,6 +9,7 @@ public class UserTable {
     public static JTable userTable;
     public static DefaultTableModel model;
     public static String [] column = {"Type", "User ID", "User IP"};
+    public static Members members = new Members();
     
     public UserTable() {
         model = new DefaultTableModel(null, column);
@@ -18,7 +19,7 @@ public class UserTable {
         userTable.getColumnModel().getColumn(2).setPreferredWidth(80);
     }
   
-    public static void tableData(SLinkedList list){
+    public static void tableData(SLinkedList list, DefaultTableModel tempModel){
        StringNode temp;
        if (list.isEmpty()){
            System.out.println("List is empty");
@@ -32,7 +33,7 @@ public class UserTable {
                String IPString = temp.getIP();
                temp = temp.getNext();
                Object[] record = {typeString, IDString, IPString};
-               model.addRow(record);
+               tempModel.addRow(record);
            }
            } catch (NullPointerException ex){
                
@@ -41,8 +42,8 @@ public class UserTable {
    }
     
     public static void addToList(SLinkedList list, String type, String ID, String IP){
-            if (type == "Coordinator"){
-                list.head.setType(type);
+            if (members.hasCoordinator()){
+                list.head.setType("Coordinator");
                 list.head.setID(ID);
                 list.head.setIP(IP);
             } else {

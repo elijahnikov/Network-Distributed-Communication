@@ -4,6 +4,7 @@ public class Coordinator {
     
     private static Coordinator instance = null;
     private String coordinatorID;
+    private String coordinatorIP;
     
     private Coordinator() {
     }
@@ -21,6 +22,14 @@ public class Coordinator {
     
     public String getCoordinator() {
         return coordinatorID;
+    }
+    
+    public void setCoordinatorIP(String IP) {
+        coordinatorIP = IP;
+    }
+    
+    public String getCoordinatorIP() {
+        return coordinatorIP;
     }
     
     public boolean contains(String name){

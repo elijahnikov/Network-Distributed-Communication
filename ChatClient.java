@@ -29,11 +29,10 @@ public class ChatClient implements ActionListener {
     UserTable ut = new UserTable();
     Members members = new Members();
     Message sm = new Message();
-    String serverAddress;
     Scanner in;
     PrintWriter out;
     int count = 0;
-    JFrame frame = new JFrame("Chatter");
+    JFrame frame = new JFrame("");
     JTextField textField = new JTextField(54);
     JTextArea messageArea = new JTextArea(16, 50);
     JPanel mainPanel = new JPanel();
@@ -48,13 +47,19 @@ public class ChatClient implements ActionListener {
     JButton userButton = new JButton("View/Update Users");
     public String type;
     public String id; 
-    public String ip;
+    public static String ip;
     public SLinkedList cl = new SLinkedList();
+    public String removeCo;
+    public String coordinator;
+    public String coordinatorIP;
+    public String member;
+    public static String memberCount;
+    public String messageText;
+    public String firstCoordinator;
 
-    public ChatClient(String serverAddress) throws IOException {
+    public ChatClient(String serverAddress, int port) throws IOException {
         
-        this.serverAddress = serverAddress;   
-        this.socket = new Socket(serverAddress, 59001);
+        this.socket = new Socket(serverAddress, port);
         
         tableScroll = new JScrollPane(ut.userTable);
         messageScroll = new JScrollPane(messageArea);
@@ -132,13 +137,18 @@ public class ChatClient implements ActionListener {
                 String line = in.nextLine();
                 if (line.startsWith("SUBMITNAME")) {
                     out.println(IG.getIDNum());
+                } else if (line.startsWith("COORDINATOR")){
+                    firstCoordinator = line.substring(11);
                 } else if (line.startsWith("SUBMITIP")){
                     out.println(IG.getIP());
+                } else if (line.startsWith("EXISTIP")){
+                    out.println(IG.getExistIP());
                 } else if (line.startsWith("NAMEACCEPTED")) {
-                    this.frame.setTitle("Chatter - " + line.substring(13));
+                    this.frame.setTitle("Chat client for user: " + line.substring(13));
                     textField.setEditable(true);
                 } else if (line.startsWith("MESSAGE")) {
-                    sm.addMessage(messageArea, line.substring(8));
+                    messageText = line.substring(8);
+                    sm.addMessage(messageArea, messageText);
                 } else if (line.startsWith("USERTYPE")){
                     out.println("temp");
                 } else if (line.startsWith("SENDTYPE")){
@@ -151,7 +161,36 @@ public class ChatClient implements ActionListener {
                     int count = Integer.parseInt(line.substring(8));
                     model.addRow(new Object[] {type, id, ip});
                     updateTable(count);
-                }    
+                } else if (line.startsWith("UPDATECO")){ 
+                    coordinator = line.substring(8);
+                    model.setValueAt(coordinator, 0, 1);
+                    model.setValueAt(ip, 0, 2);
+                    for (int i = 1; i < model.getRowCount(); i++){
+                        if (model.getValueAt(i, 1).equals(coordinator)){
+                            model.removeRow(i);
+                        }
+                    }
+                } else if (line.startsWith("REMOVEMEM")){
+                    member = line.substring(9);
+                    System.out.println(member);
+                    for (int i = 1; i < model.getRowCount(); i++){
+                        if (model.getValueAt(i, 1).equals(member)){
+                            model.removeRow(i);
+                        }
+                    }
+                } else if (line.startsWith("ACTIVITY")){
+                    if (messageText.contains(firstCoordinator)){
+                        if (messageText.contains(firstCoordinator)){
+                            out.println("restart");
+                        }
+                        String time = sm.getTime();
+                        System.out.println(sm.shortenTime(time));
+                    }
+                } else if (line.startsWith("TIME1")){
+                    System.out.println(sm.getTime());
+                } else if (line.startsWith("TIME2")){
+                    System.out.println(sm.getTime());
+                }
             }            
         } finally {
             frame.setVisible(false);
@@ -166,9 +205,19 @@ public class ChatClient implements ActionListener {
         }
     }
     
-    private void updateTable(int count){
+    public void updateTable(int count){
         if (model.getRowCount() > count){
             model.removeRow(model.getRowCount() - count);
+        }
+    }
+    
+    public void removeUser(String user){
+        for (int i = 0; i < model.getRowCount(); i++){
+            System.out.println("here");
+            if (model.getValueAt(i, 1).equals(user)){
+                model.removeRow(i);
+                
+            }
         }
     }
 }

@@ -77,4 +77,22 @@ public class SLinkedList {
         }
     }
 
+    public static boolean contains(SLinkedList list, String existIP){
+        StringNode newtemp;
+        boolean check = false;
+        if (list.isEmpty()){
+            System.out.println("List is empty");
+        } else {
+            newtemp = list.head;
+            while(newtemp != null) {
+                if (existIP.equals(newtemp.getIP())){
+                    check = true;
+                    break;
+                } else {
+                    newtemp = newtemp.getNext();
+                }
+            }
+        }
+        return check;
+    }
 }

@@ -9,8 +9,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -23,12 +21,16 @@ public class InputGUI implements ActionListener {
     
     private final JFrame frame = new JFrame("Connect Menu");
     private final JPanel mainPanel = new JPanel();
+    private final JTextField serverIPField = new JTextField();
+    private final JTextField serverPortField = new JTextField();
     private final JTextField userIDField = new JTextField();
     private final JTextField userIPField = new JTextField();
     private final JTextField userPortField = new JTextField();
     public JTextField existingUserIPField = new JTextField();
     public JTextField existingUserPortField = new JTextField();
     private final JLabel userIDLabel = new JLabel("User ID: ");
+    private final JLabel serverIPLabel = new JLabel("Server IP: ");
+    private final JLabel serverPortLabel = new JLabel("Server Port: ");
     private final JLabel userIPLabel = new JLabel("User IP Address: ");
     private final JLabel userPortLabel = new JLabel("User Port: ");
     public JLabel existingUserIPLabel = new JLabel("Existing User IP Address: ");
@@ -39,6 +41,7 @@ public class InputGUI implements ActionListener {
     private final GridBagConstraints gc = new GridBagConstraints();
     private static String tempID;
     private static String tempIP;
+    private static String tempExistIP;
 
     Validation vc = new Validation();
     Members member = new Members();
@@ -47,16 +50,13 @@ public class InputGUI implements ActionListener {
     public void createGUI(){
        
         //sets preferred size for text fields
+        serverIPField.setPreferredSize(new Dimension(150, 27));
+        serverPortField.setPreferredSize(new Dimension(150, 27));
         userIDField.setPreferredSize(new Dimension(150, 27));
         userIPField.setPreferredSize(new Dimension(150, 27));
         userPortField.setPreferredSize(new Dimension(150, 27));
         existingUserIPField.setPreferredSize(new Dimension(150, 27));
         existingUserPortField.setPreferredSize(new Dimension(150, 27));
-
-        existingUserIPLabel.setVisible(true);
-        existingUserPortLabel.setVisible(true);
-        existingUserIPField.setVisible(true);
-        existingUserPortField.setVisible(true);
             
         connectButton.addActionListener(this);
         connectButton.setActionCommand("connectButton");
@@ -79,16 +79,13 @@ public class InputGUI implements ActionListener {
         gc.gridx = 0;
         gc.gridy = 3;
         mainPanel.add(existingUserIPLabel, gc);
-        gc.gridx = 0;
-        gc.gridy = 4;
-        mainPanel.add(existingUserPortLabel, gc);
         
         gc.anchor = GridBagConstraints.LINE_START;
         gc.gridx = 1;
         gc.gridy = 0;
         mainPanel.add(userIDField, gc);
         gc.gridx = 1;
-        gc.gridy = 1; 
+        gc.gridy = 1;
         mainPanel.add(userIPField, gc);
         gc.gridx = 1;
         gc.gridy = 2;
@@ -96,15 +93,12 @@ public class InputGUI implements ActionListener {
         gc.gridx = 1;
         gc.gridy = 3;
         mainPanel.add(existingUserIPField, gc);
-        gc.gridx = 1;
-        gc.gridy = 4;
-        mainPanel.add(existingUserPortField, gc);
         gc.weighty = 0;
         gc.gridx = 1;
-        gc.gridy = 5;
+        gc.gridy = 4;
         mainPanel.add(connectButton, gc);
         gc.gridx = 0;
-        gc.gridy = 5;
+        gc.gridy = 4;
         mainPanel.add(requestIDButton, gc);
         
         frame.setPreferredSize(new Dimension(400, 230));
@@ -113,8 +107,8 @@ public class InputGUI implements ActionListener {
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         frame.pack();
         frame.setLocationRelativeTo(null);
-        frame.setVisible(true); 
-               
+        frame.setVisible(true);
+       
     }
     
     //array list containing the id's to ensure system does not generate a duplicate
@@ -136,20 +130,17 @@ public class InputGUI implements ActionListener {
             } else {
                 System.out.println("number already in array");
             }
-           
+            userIDField.requestFocus();
+             
         }
-        
-        
-        
+           
         if ("connectButton".equals(e.getActionCommand())){ 
-            
-            
             //if (vc.checkForID(userIDField) && vc.checkForIP(userIPField) && vc.checkForPort(userPortField){
                 Thread connectThread = new Thread(new Runnable() {
                     @Override
                     public void run() {
                         try {
-                            ChatClient clientClass = new ChatClient("192.168.0.11");
+                            ChatClient clientClass = new ChatClient(userIPField.getText(), Integer.parseInt(userPortField.getText()));
                             clientClass.run();
                         } catch (IOException ex) {
                             JOptionPane.showMessageDialog(null, "Invalid IP, please retry.");
@@ -160,10 +151,10 @@ public class InputGUI implements ActionListener {
                 frame.dispose();
                 setIDNum(userIDField.getText());
                 setIP(userIPField.getText());
+                setExistIP(existingUserIPField.getText());
             /*} else {
                 JOptionPane.showMessageDialog(null, "Please enter correct data in all fields.");
-            } */
-            
+            } */   
         }
     }
 
@@ -188,5 +179,13 @@ public class InputGUI implements ActionListener {
     
     public void setIP(String IP){
         this.tempIP = IP;
+    }
+    
+    public String getExistIP(){
+        return tempExistIP;
+    }
+    
+    public void setExistIP(String IP){
+        this.tempExistIP = IP;
     }
 }
